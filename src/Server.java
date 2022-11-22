@@ -6,13 +6,10 @@ public class Server {
 
         ServerSocket socketServidor = new ServerSocket(5000);
         System.out.println("Servidor iniciado...");
-
         while (true) {
             Socket socketCliente = socketServidor.accept();
-
             GeradorThread escuta = new GeradorThread(socketCliente);
             escuta.start();
         }
-
     }
 }

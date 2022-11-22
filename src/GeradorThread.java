@@ -1,22 +1,33 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GeradorThread extends Thread {
-    Socket socketClient;
-    PrintWriter out;
-    BufferedReader in;
+
+    private Socket socketCliente;
+    private Socket socketResposta;
+    private DataOutputStream outputResposta;
+    private DataInputStream inputCliente;
+
 
     public GeradorThread(Socket socketCliente) {
-        this.socketClient = socketCliente;
+        try{
+            this.socketCliente = socketCliente;
+            this.inputCliente = new DataInputStream(this.socketCliente.getInputStream());
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void run() {
         try {
-            System.out.println("Thread criada!");
-            socketClient.close();
-        } catch (IOException e) {
+            System.out.println(inputCliente.readUTF());            
+            socketResposta = new Socket(this.socketCliente.getInetAddress(), 5002);
+            this.socketCliente.close();
+            outputResposta = new DataOutputStream(socketResposta.getOutputStream());
+            outputResposta.writeUTF("Respondi");
+            outputResposta.flush();
+        } catch (IOException e){
             e.printStackTrace();
         }
 
