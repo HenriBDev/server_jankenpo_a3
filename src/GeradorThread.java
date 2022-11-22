@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class GeradorThread extends Thread {
@@ -8,7 +7,7 @@ public class GeradorThread extends Thread {
     private Socket socketResposta;
     private DataOutputStream outputResposta;
     private DataInputStream inputCliente;
-
+    private int PORTA_CLIENTE = 8000;
 
     public GeradorThread(Socket socketCliente) {
         try{
@@ -22,7 +21,7 @@ public class GeradorThread extends Thread {
     public void run() {
         try {
             System.out.println(inputCliente.readUTF());            
-            socketResposta = new Socket(this.socketCliente.getInetAddress(), 5002);
+            socketResposta = new Socket(this.socketCliente.getInetAddress(), PORTA_CLIENTE);
             this.socketCliente.close();
             outputResposta = new DataOutputStream(socketResposta.getOutputStream());
             outputResposta.writeUTF("Respondi");
