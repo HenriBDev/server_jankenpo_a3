@@ -4,31 +4,41 @@ import java.net.Socket;
 public class GeradorThread extends Thread {
 
     private Socket socketCliente;
-    private Socket socketResposta;
     private DataOutputStream outputResposta;
     private DataInputStream inputCliente;
-    private int PORTA_CLIENTE = 8000;
 
     public GeradorThread(Socket socketCliente) {
-        try{
-            this.socketCliente = socketCliente;
-            this.inputCliente = new DataInputStream(this.socketCliente.getInputStream());
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        this.socketCliente = socketCliente;
     }
 
     public void run() {
-        try {
-            System.out.println(inputCliente.readUTF());            
-            socketResposta = new Socket(this.socketCliente.getInetAddress(), PORTA_CLIENTE);
-            this.socketCliente.close();
-            outputResposta = new DataOutputStream(socketResposta.getOutputStream());
-            outputResposta.writeUTF("Respondi");
-            outputResposta.flush();
-        } catch (IOException e){
+        try{
+            inputCliente = new DataInputStream(socketCliente.getInputStream());
+            if(inputCliente.readUTF().equals("Conexão")){
+                if(Partida.ipJogador1 == null){
+                    Partida.ipJogador1 = socketCliente.getInetAddress();
+                    Partida.portaJogador1 = socketCliente.getPort();
+
+                    while (Partida.portaJogador2 == 0){
+                        System.out.print("");
+                    }
+
+                    outputResposta = new DataOutputStream(socketCliente.getOutputStream());
+                    outputResposta.writeUTF("Conexão Estabelecida!");
+                    outputResposta.flush();
+                }
+                else{
+                    Partida.ipJogador2 = socketCliente.getInetAddress();
+                    Partida.portaJogador2 = socketCliente.getPort();
+
+                    outputResposta = new DataOutputStream(socketCliente.getOutputStream());
+                    outputResposta.writeUTF("Conexão Estabelecida!");
+                    outputResposta.flush();
+                }
+            }
+        }catch(IOException e){
             e.printStackTrace();
         }
-
+        
     }
 }
