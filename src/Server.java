@@ -13,7 +13,9 @@ public class Server {
         System.out.println("[ " + Calendar.getInstance().getTime() + " ] Servidor iniciado na porta " + PORTA_SERVER);
         while (true) {
             socketCliente = socketServidor.accept();
-            System.out.println("[ " + Calendar.getInstance().getTime() + " ] Conexão recebida " + socketCliente.getPort());
+            Partida.pontuacaoJogador1 = 0;
+            Partida.pontuacaoJogador2 = 0;
+            System.out.println("[ " + Calendar.getInstance().getTime() + " ] Conexão recebida de " + socketCliente.getInetAddress());
             geradorThread = new GeradorThread(socketCliente);
             geradorThread.start();
         }
